@@ -1,0 +1,268 @@
+﻿<div class="form-group input-group">
+    <span class="input-group-addon"><i class="fa fa-tag"></i></span>
+    <input type="text" class="form-control" v-model="user.name" placeholder="用户名"/>
+</div>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="content-type" content="no-cache, must-revalidate"/>
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
+    <title>首页</title>
+
+    <link href="../css/bootstrap.css" rel="stylesheet"/>
+    <link href="../css/font-awesome.css" rel="stylesheet"/>
+    <link href="../css/custom-styles.css" rel="stylesheet"/>
+    <link href="../css/element/index.css" rel="stylesheet"/>
+
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+		.main-box {
+			text-align: center;
+			padding: 20px;
+			border-radius: 5px;
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+			margin-bottom: 40px;
+		}
+    </style>
+</head>
+
+<body>
+<div id="wrapper" v-cloak>
+    <div class="row">
+        <div class="col-md-12" style="height:60px;">
+            <nav class="navbar navbar-default top-navbar" role="navigation">
+                <div class="row">
+                    <div class="col-md-2">
+                        <a class="navbar-brand" style="width:100%; background-color: darkslateblue"
+                           href="index.html"><strong style="font-size: 20px;">电影订票购票系统</strong></a>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="navbar-header">
+                            <a href="/front/index.html"
+                               style="color: white; line-height: 60px; font-size: 16px; margin-left: 30px"><i
+                                    class="fa fa-desktop"></i></a>
+                        </div>
+                        <ul class="nav navbar-top-links navbar-right">
+                            <li style="color: white">欢迎您，{{ user.name }}</li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                    <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-user">
+                                    <li><a href="javascript:void(0)" @click="personalPage"><i
+                                            class="fa fa-user fa-fw"></i> 个人信息</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li><a href="javascript:void(0)" @click="logout"><i
+                                            class="fa fa-sign-out fa-fw"></i> 退出</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <nav id="nav-id" class="navbar-default navbar-side" role="navigation">
+                <div class="sidebar-collapse">
+                    <ul class="nav" id="main-menu">
+                        <li>
+                            <a href="index.html" class="active-menu"><i class="fa fa-dashboard"></i> 首页</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-sitemap"></i> 信息管理<span class="fa arrow"></span></a>
+							<ul class="nav nav-second-level collapse in">
+								<li v-if="authority.indexOf(1) != -1">
+									<a href="adminInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">管理员信息</span></a>
+								</li>
+								<li v-if="authority.indexOf(3) != -1">
+									<a href="userInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">用户信息</span></a>
+								</li>
+								<li v-if="authority.indexOf(4) != -1">
+									<a href="messageInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">交流信息</span></a>
+								</li>
+								<li v-if="authority.indexOf(1000001) != -1">
+									<a href="advertiserInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">公告信息</span></a>
+								</li>
+
+								<li v-if="authority.indexOf(1000015) != -1">
+									<a href="goodsInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">电影详情</span></a>
+								</li>
+
+								<li v-if="authority.indexOf(1000017) != -1">
+									<a href="orderInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">订单信息</span></a>
+								</li>
+								<li v-if="authority.indexOf(1000018) != -1">
+									<a href="commentInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">评价信息</span></a>
+								</li>
+								<li v-if="authority.indexOf(10000014) != -1">
+									<a href="typeInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">电影类型</span></a>
+								</li>
+
+                                <li>
+                                    <a href="javascript:void(0)" @click="personalPage"><i class="fa fa-user"></i>个人信息</a>
+                                </li>
+                            </ul>
+                        </li>
+
+						<li>
+							<a href="updatePassword.html"><i class="fa fa-unlock-alt"></i>修改密码</a>
+						</li>
+						<li>
+							<a href="javascript:void(0)" @click="logout"><i class="fa fa-power-off"></i>退出登录</a>
+						</li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="col-md-10" id="page-id" style="background-color: #e6e6e6">
+            <div id="page-wrapper">
+                <div id="page-inner">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="main-box" style="background-color: chocolate">
+                                <i class="fa fa-user"></i><span style="margin-left: 20px;">用户总数：{{ totalUser }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="main-box" style="background-color: burlywood">
+                                <i class="fa fa-rmb"></i><span style="margin-left: 20px;">总交易额：{{ totalPrice }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="main-box" style="background-color: cadetblue">
+                                <i class="fa fa-shopping-cart"></i><span style="margin-left: 20px;">总销量：{{ totalShopping }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">
+                                    <select @change="selectEchartsType" v-model="echartsType">
+                                        <option value="pie">饼图</option>
+                                        <option value="bar">柱状图</option>
+                                    </select>
+                                </div>
+                                <div class="panel-body">
+                                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div id="left" style="width: 100%;height:400px;"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div id="right" style="width: 100%;height:400px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/jquery-1.10.2.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.metisMenu.js"></script>
+<script src="../js/custom-scripts.js"></script>
+<script src="../js/my.js"></script>
+<script src="../js/vue2.6.11/vue.min.js"></script>
+<script src="../js/vue2.6.11/axios.js"></script>
+<script src="../js/echarts.min.js"></script>
+<script src="../js/element/index.js"></script>
+
+<script>
+    new Vue({
+        el: "#wrapper",
+        data: {
+            authority: [],
+            user: {},
+            totalUser: 0,
+            totalComment: 0,
+            totalPrice: 0,
+            totalShopping: 0,
+            echartsShowLeftArr: [],
+            echartsShowRightArr: [],
+            echartsType: 'pie'
+        },
+        created: function () {
+            this.user = JSON.parse(localStorage.getItem("user"));
+            axios.get("/authority").then(res => {
+                if (res.data.code === 0) {
+                    this.authority = res.data.data;
+                } else {
+                    msg('error', res.data.msg);
+                }
+            });
+            axios.get("/echarts/getTotal").then(res => {
+                if (res.data.code === 0) {
+                    let map = res.data.data;
+                    this.totalUser = map['totalUser'];
+                    this.totalComment = map['totalComment'];
+                    this.totalPrice = map['totalPrice'];
+                    this.totalShopping = map['totalShopping'];
+                }
+            });
+
+            this.drawLine();
+        },
+        methods: {
+            drawLine() {
+                axios.get('/echarts/get/price').then(res => {
+                    // 基于准备好的dom，初始化echarts实例
+                    this.echartsShowLeftArr = res.data.data;
+                    if (this.echartsShowLeftArr.length) {
+                        let myChart = echarts.init(document.getElementById('left'));
+                        let option = this.getEchartsType(this.echartsShowLeftArr, this.echartsType);
+                        myChart.setOption(option, true);
+                    }
+                });
+                axios.get('/echarts/get/shopping').then(res => {
+                    // 基于准备好的dom，初始化echarts实例
+                    this.echartsShowRightArr = res.data.data;
+                    if (this.echartsShowRightArr.length) {
+                        let myChart = echarts.init(document.getElementById('right'));
+                        let option = this.getEchartsType(this.echartsShowRightArr, this.echartsType);
+                        myChart.setOption(option, true);
+                    }
+                });
+            },
+            selectEchartsType() {
+                let leftChart = echarts.init(document.getElementById('left'));
+                let leftOption = this.getEchartsType(this.echartsShowLeftArr, this.echartsType);
+                leftChart.setOption(leftOption, true);
+
+                let rightChart = echarts.init(document.getElementById('right'));
+                let rightOption = this.getEchartsType(this.echartsShowRightArr, this.echartsType);
+                rightChart.setOption(rightOption, true);
+            },
+            getEchartsType(echartsArr, type) {
+                for (let item of echartsArr) {
+                    if (item.series[0].type === type) {
+                        return item;
+                    }
+                }
+            },
+            logout() {
+                logout();
+            }
+        }
+    });
+
+
+</script>
+
+</body>
+</html>

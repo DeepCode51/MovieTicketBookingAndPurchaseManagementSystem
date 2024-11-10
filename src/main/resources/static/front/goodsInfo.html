@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="content-type" content="no-cache, must-revalidate"/>
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
+    <title>商品详情</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/my.css" rel="stylesheet">
+    <link href="css/nav.css" rel="stylesheet">
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/element/index.css" rel="stylesheet"/>
+
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        .left-box {
+            width: 100%;
+            height: 400px;
+            background-color: #FFFFFF;
+        }
+
+        .right-box {
+            width: 100%;
+            height: 400px;
+            background-color: #fff;
+        }
+
+        .right-box li {
+            padding: 10px 40px
+        }
+
+        .count-group {
+            margin-left: 20px;
+        }
+
+        .count-group button {
+            width: 30px;
+            background-color: white;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .count-group span {
+            padding: 0 5px;
+            border: 1px solid #ccc
+        }
+
+        .img-item-box {
+            width: 100%;
+            height: 90px;
+            margin-top: 10px;
+        }
+
+        .praise {
+            cursor: pointer;
+            font-size: 20px;
+            margin-left: 10px;
+        }
+        .nx-nav-container ul {
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nx-nav-container ul li {
+            display: inline-block;
+            width: 120px;
+            text-align: center;
+            line-height: 45px;
+        }
+
+        .nx-nav-container a {
+            color: #FFFFFF;
+        }
+
+        .nx-nav-container a:hover {
+            color: aquamarine;
+            text-decoration: none;
+        }
+
+    </style>
+</head>
+<body>
+<div id="wrapper" v-cloak>
+    <div class="nx-header">
+        <div style="display: flex;width: 100%; height: 30px; line-height: 30px; background-color: #eee;">
+            <div style="flex: 5; padding: 0 10px; color: orangered">
+                欢迎访问 电影订票购票系统
+            </div>
+            <div v-if="user.name" style="flex: 1">
+                欢迎您：{{user.name}}
+                <a style="margin-left: 30px; color: blue" href="javascript:void(0)" @click="logout">退出</a>
+                <a v-if="isCollect" style="margin-left: 10px" href="collectInfo.html">收藏夹</a>
+            </div>
+        </div>
+    </div>
+    <div style="height: 80px; line-height: 80px;">
+        <div style="margin-left: 20px; position: relative">
+            <img src="img/logo1.png" alt="" style="width: 40px; position: absolute; top: 20px">
+            <b style="margin-left:45px;font-size: 25px; text-shadow: 5px 5px 3px #888888;">电影订票购票系统</b>
+        </div>
+    </div>
+
+    <div class="nx-nav-container" style="height: 45px; background-color: black">
+        <ul>
+            <li><a href="index.html">首页</a></li>
+            <li><a href="advertiserInfo.html" >公告信息</a></li>
+            <li><a href="messageInfo.html">交流信息</a></li>
+
+            <li><a href="cartInfo.html">收藏栏信息</a></li>
+            <li><a href="orderInfo.html">订单信息</a></li>
+            <li><a href="commentInfo.html">评价信息</a></li>
+
+            <li><a href="javascript:void(0)" @click="personalPage">个人信息</a></li>
+            <li v-if="isShow"><a href="/end/page/index.html" target="_blank">进入后台系统</a></li>
+            <li><a href="/end/page/login.html" target="_blank">登录</a></li>
+            <li><a href="/end/page/register2.html" target="_blank">注册</a></li>
+        </ul>
+    </div>
+    <div class="container" style="margin-top: 20px">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="left-box">
+                    <div style="width: 100%; height: 300px">
+                        <img id="main-img-id" style="height: 100%; width: 100%" :src=mainSrc alt="">
+                    </div>
+                    <ul class="img-item-box">
+                        <li v-for="id in fileIds" class="col-md-3">
+                            <img @mouseover="mouseOver(id)" style="width: 100%; height: 100%"
+                                 :src="'/files/download/' + id" alt="">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="right-box">
+                    <ul>
+                        <li>
+                            <span class="right-title">{{goodsInfo.name}}</span>
+                            <i class="fa fa-thumbs-o-up praise" @click="hotClick()"><span style="margin-left: 3px; font-size: 12px">{{goodsInfo.hot}}</span></i>
+                        </li>
+                        <li>描述：<span style="color: red; margin-left: 20px;">{{goodsInfo.description}}</span></li>
+                        <li>主演：<span style="color: red; margin-left: 20px;">{{goodsInfo.actor}}</span></li>
+                        <li>价格：<span style="color: red; margin-left: 20px;">￥ {{goodsInfo.price}}</span></li>
+                        <li>促销：<span style="color: red; margin-left: 20px;">{{goodsInfo.discount}}</span></li>
+                        <li>上映时间：<span style="color: red; margin-left: 20px;">{{goodsInfo.beginTime}}</span></li>
+                        <li>放映时长：<span style="color: red; margin-left: 20px;">{{goodsInfo.time}} 分钟</span></li>
+                        <li>
+                            <div id="div1">
+                                <button class="btn btn-info" @click="buySeat()">在线选座</button>
+
+                                <button v-show="isLike == 0" class="btn btn-info" @click="addCart()">收藏</button>
+                                <button v-show="isLike == 1" class="btn btn-warning" @click="deleteCart()" >取消收藏</button>
+                            </div>
+
+
+
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div style="background-color: white; min-height: 300px">
+                <div style="width: 100%; height: 50px; background-color: #ddd; line-height: 50px; margin: 30px 0">
+                    <span style="font-weight: bold; margin-left: 20px; font-size: 16px">电影评价（{{totalComment}}）</span>
+                </div>
+                <div id="comment-content">
+                    <div v-for="item in comments" class="row">
+                        <div class="col-md-1" style="text-align: right">{{item.userName}}</div>
+                        <div class="col-md-10">
+                            <div class="row" style="padding: 0 40px">
+                                <div class="col-md-12" style="text-align: justify;">{{item.content}}</div>
+                                <div class="col-md-12" style="text-align: right; margin-top: 10px">
+                                    <span style="color: #888888">{{item.createTime}}</span>
+                                    <hr>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 在线选座弹窗 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width: 800px;">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">在线选座</h4>
+                </div>
+                <div class="modal-body">
+                    <div style="display: flex">
+                        <div style="width: 60%; padding: 10px;">
+                            <div style="width: 340px; height: 10px; background-color: black; margin-left: 40px"></div>
+                            <div style="text-align: center; margin-bottom: 20px;font-size: 12px; color: #888; padding-left: 20px">屏幕</div>
+                            <div style="width: 390px; margin: 0 auto" id="seat-area">
+                            </div>
+                            <div style="text-align: right;width: 370px;margin: 10px auto">
+                                <div style="display: inline-block; width: 30px; height: 10px; background-color: brown"></div>已售
+                                <div style="display: inline-block;width: 30px; height: 10px; background-color: #1E9FFF"></div>空闲
+                            </div>
+                        </div>
+
+                        <div style="width: 50%; padding-top: 30px;border-left: 1px solid #ccc">
+                            <div style="width: 75%; margin: 0 auto;color: #666">
+                                <div class="row">
+                                    <div class="col-md-3">影片：</div>
+                                    <div class="col-md-9" id="movie"></div>
+                                </div>
+                                <div class="row" style="margin-top: 10px">
+                                    <div class="col-md-3">座位：</div>
+                                    <div class="col-md-9" id="seat-view"></div>
+                                </div>
+                                <div class="row" style="margin-top: 10px">
+                                    <div class="col-md-3">票数：</div>
+                                    <div class="col-md-9" id="tickets">4</div>
+                                </div>
+                                <div class="row" style="margin-top: 10px">
+                                    <div class="col-md-3">总计：</div>
+                                    <div class="col-md-9" id="total">￥ 200</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" @click="postSeat()">下单</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</div>
+
+<script src="js/jquery-1.10.2.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.metisMenu.js"></script>
+<script src="js/vue2.6.11/axios.js"></script>
+<script src="js/vue2.6.11/vue.min.js"></script>
+<script src="js/my.js"></script>
+<script src="js/element/index.js"></script>
+<script>
+    let goodsId;
+    let seatArr = [];
+    let tempArr = [];
+    let seatId;
+
+    function msg(type, msg) {
+        Vue.prototype.$message({
+            type: type, // success（成功）、warning（警告）, error(错误)
+            message: msg,
+            duration: 2000,
+            offset: 100,
+            center: true
+        })
+    }
+    new Vue({
+        el: '#wrapper',
+        // provide(){
+        //     return{
+        //         reload: this.reload
+        //     }
+        // },
+        data: {
+            isCollect: false,
+            mainSrc: '',
+            fileIds: [],
+            goodsInfo: {},
+            comments: [],
+            totalComment: 0,
+            isShow: false,
+            user: {},
+            isLike: 0,
+            // isReload: true
+        },
+
+        created: function () {
+            axios.get('/auth').then(res => {
+                if (res.data.code === 0) {
+                    this.user = res.data.data;
+                    if (this.user.level === 1) {
+                        this.isShow = true;
+                    }
+                }
+            });
+            this.goodsId = this.getQueryVariable('goodsId');
+            goodsId = this.goodsId;
+            this.loadGoodsInfo();
+
+            this.loadComments();
+        },
+
+        methods: {
+            // reload(){
+            //     this.isReload=false;
+            //     this.$nextTick(function(){
+            //         this.isReload=true;
+            //     })
+            // },
+             loadGoodsInfo() {
+                axios.get("/goodsInfo/" + this.goodsId).then(res => {
+
+                    if (res.data.code === 0) {
+                        this.goodsInfo = res.data.data;
+                        this.mainSrc = '/front/img/goods/default.png';
+                        if (this.goodsInfo.fileIds) {
+                            let fileIds = JSON.parse(this.goodsInfo.fileIds);
+                            // 截取前4个展示
+                            if (fileIds.length > 4) {
+                                fileIds = fileIds.splice(0, 4);
+                            }
+                            this.fileIds = fileIds;
+
+                            if (fileIds.length) {
+                                this.mainSrc = '/files/download/' + fileIds[0];
+                            }
+                        }
+
+                        if(this.user.id != null){
+                            this.loadLikeStatus();
+                          }
+
+
+                        let discount = this.goodsInfo.discount;
+                        this.goodsInfo.discount = discount < 1 ? discount * 10 + " 折" : '-';
+
+
+                        // 请求电影座位数据
+                        let price = this.goodsInfo.price;  // 商品单价
+                        let name = this.goodsInfo.name;  // 商品名称
+                        $.get('/seatInfo/detail', {userId: this.user.id, goodsId: goodsId}, function (res) {
+                            if(res.code === 0) {
+                                if(res.data) {
+                                    let position = res.data.position;
+                                    if(position) {
+                                        seatArr = JSON.parse(position);
+                                    }
+                                    seatId = res.data.id;
+                                }
+
+                                // 初始化选座区域
+                                let $seatArea = $("#seat-area");
+                                $seatArea.empty();
+                                $('#movie').text(name);
+                                $('#seat-view').text(tempArr.join("，"));
+                                $('#tickets').text(tempArr.length);
+                                $('#total').text("￥ " + (tempArr.length * price * discount).toFixed(2));
+                                for (let i = 1; i <= 10; i++) {
+                                    $seatArea.append("<div style='width: 30px; height: 30px;margin-bottom:5px;margin-right:5px; text-align: center;" +
+                                        "vertical-align:middle;line-height: 30px; display: inline-block'>"+i+"</div>");
+                                    for (let j = 1; j <=10 ; j++) {
+                                        $seatArea.append("<div style='width: 30px; height: 30px;cursor: pointer; text-align: center;vertical-align:middle;line-height: 30px;color:white;border-radius:5px;" +
+                                            "margin-bottom:5px;margin-right:5px;background-color: #1E9FFF; display: inline-block' class='seat-block' data-id="+i+"排"+j+"座>"+j+"</div>");
+                                    }
+                                }
+
+                                for (const s of seatArr) {
+                                    $('.seat-block').each(function () {
+                                        if($(this).attr('data-id') === s) {
+                                            $(this).css('background', 'brown');
+                                        }
+                                    });
+                                }
+
+                                $('.seat-block').click(function () {
+                                    $(this).css('background', 'brown');
+                                    const dataId = $(this).attr('data-id');
+                                    if (seatArr.includes(dataId)) {
+                                        return;
+                                    }
+                                    if(!tempArr.includes(dataId)) {
+                                        tempArr.push(dataId);
+                                    } else {
+                                        tempArr.splice(tempArr.indexOf(dataId), 1);
+                                        $(this).css('background', '#1E9FFF');
+                                    }
+                                    $('#seat-view').text(tempArr.join("，"));
+                                    $('#tickets').text(tempArr.length);
+                                    $('#total').text("￥ " + (tempArr.length * price * discount).toFixed(2));
+                                })
+                            } else {
+                                console.log('error', res.msg);
+                            }
+                        })
+                    } else {
+                        alert(res.data.msg);
+                    }
+                });
+            },
+
+            loadLikeStatus(){
+                 console.log(this.user.level)
+                console.log("前",this.isLike)
+                axios.get('/cartInfo/findIsLike',{params:{userId:this.user.id,goodsId:this.goodsId,level:this.user.level}}).then(res => {
+                    // console.log(res.data)
+                    if (res.data.data != null){
+                        this.isLike = 1
+                        // this.reload()
+                        // console.log("后",this.isLike)
+                    }
+                })
+            },
+
+            loadComments() {
+                axios.get('/commentInfo/all/' + this.goodsId).then(res => {
+                    if (res.data.code === 0) {
+                        this.comments = res.data.data;
+                        this.totalComment = this.comments.length;
+                    } else {
+                        alert(res.data.msg)
+                    }
+                })
+            },
+            getQueryVariable(variable) {
+                let query = window.location.search.substring(1);
+                let vars = query.split("&");
+                for (let i = 0; i < vars.length; i++) {
+                    let pair = vars[i].split("=");
+                    if (pair[0] === variable) {
+                        return pair[1];
+                    }
+                }
+                return '';
+            },
+            mouseOver(id) {
+                $('#main-img-id').attr('src', '/files/download/' + id);
+            },
+            changeCount(type) {
+                let $count = $('#count-id');
+                let $store = $('#store-id');
+                let count = parseInt($count.text());
+                let store = parseInt($store.text());
+                if (type === '+') {
+                    count = count === store ? store : count + 1;
+                } else {
+                    count = count === 1 ? 1 : count - 1;
+                }
+                $count.text(count)
+            },
+            //收藏电影
+            addCart() {
+                if (!this.user.name) {
+                    alert('请先登录');
+                    location.href = '/end/page/login.html';
+                    return;
+                }
+                axios.post('/cartInfo/', {userId: this.user.id, level: this.user.level, goodsId: goodsId} ).then(res => {
+                    console.log(res.data)
+                    if (res.data.code === 0) {
+                        this.isLike = 1
+                        msg("success","收藏成功")
+                        // window.location.reload()
+                    }
+                })
+
+                // let data = {userId: this.user.id, level: this.user.level, goodsId: goodsId};
+                // $.ajax({
+                //     url: '/cartInfo',
+                //     type: 'post',
+                //     contentType: 'application/json',
+                //     data: JSON.stringify(data),
+                //     success: function (res) {
+                //         if(res.code === 0) {
+                //             msg('success', '收藏成功');
+                //             this.isLike = 1
+                //             // this.reload()
+                //             window.location.reload()
+                //         } else {
+                //             alert(res.msg);
+                //         }
+                //     }
+                // })
+            },
+            deleteCart() {
+                // axios.delete('/cartInfo/goods/',{params:{userId:this.user.id,goodsId:this.goodsId,level:this.user.level}}).then(res => {
+                //     // console.log(res.data)
+                //     if (res.data.data != null){
+                //         this.isLike = 0
+                //         window.location.reload()
+                //         // console.log("后",this.isLike)
+                //     }
+                // })
+                // console.log(this.user.id)
+                // console.log(goodsId)
+                // console.log(this.user.level)
+                axios.delete('/cartInfo/goods/' + this.user.id + '/' + this.user.level + '/' + goodsId ).then(res => {
+                    console.log(res.data)
+                    if (res.data.code === 0) {
+                        // alert('删除成功');
+                        this.isLike = 0
+                        msg("success","取消收藏成功")
+                        // window.location.reload()
+                    }
+                })
+
+            },
+
+            hotClick() {
+                axios.put('/goodsInfo', {id: this.goodsId, hot: 1}).then(res => {
+                    if (res.data.code === 0) {
+                        alert('点赞+1');
+                        this.loadGoodsInfo();
+                    } else {
+                        alert(res.data.msg)
+                    }
+                })
+            },
+            buySeat() {
+                if (!this.user.name) {
+                    alert('请先登录');
+                    location.href = '/end/page/login.html';
+                    return;
+                }
+                $('#myModal').modal('show')
+            },
+            postSeat() {
+                if (!this.user.name) {
+                    alert('请先登录');
+                    location.href = '/end/page/login.html';
+                    return;
+                }
+                if (!tempArr.length) {
+                    alert('请先选座');
+                    return;
+                }
+                let data = {id: seatId, goodsId: goodsId, position: JSON.stringify(tempArr.concat(seatArr))};
+                let _this = this;
+                $.ajax({
+                    url: '/seatInfo',
+                    type: 'post',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (res) {
+                        if(res.code === 0) {
+                            let data = JSON.stringify({userId: _this.user.id, level: _this.user.level, total: tempArr.length, goodsId: goodsId, position: JSON.stringify(tempArr)});
+                           console.log("data",data)
+                            $.ajax({
+                                url: '/orderInfo',
+                                type: 'POST',
+                                data: data,
+                                contentType: 'application/json',
+                                success: function (res) {
+                                    if(res.code === 0) {
+                                        alert('下单成功，请前往付款');
+                                        setTimeout(function () {
+                                            location.href = '/front/orderInfo.html';
+                                        }, 1000)
+                                    } else {
+                                        alert(res.msg);
+                                    }
+                                }
+                            })
+                        } else {
+                            alert(res.data.msg)
+                        }
+                    }
+                });
+            },
+            logout() {
+                axios.get("/logout").then(res => {
+                    if(res.data.code === 0) {
+                        location.href = '/front/index.html';
+                    } else {
+                        alert(res.data.msg)
+                    }
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>

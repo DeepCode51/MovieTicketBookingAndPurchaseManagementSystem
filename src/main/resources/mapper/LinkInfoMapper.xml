@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.LinkInfoDao">
+
+    <select id="findByName" resultType="com.example.vo.LinkInfoVo">
+        select `link_info`.* from `link_info`
+
+        where 1 = 1
+        <if test="name != null and name != '' and name != 'all'">
+            and `link_info`.`name` like concat('%', #{name}, '%')
+        </if>
+        order by `link_info`.id
+    </select>
+
+    <select id="findVoById" resultType="com.example.vo.LinkInfoVo">
+        select `link_info`.* from `link_info`
+
+        where `link_info`.id = #{id}
+    </select>
+
+    <select id="count">
+        select count(id) from `link_info`
+    </select>
+
+
+</mapper>

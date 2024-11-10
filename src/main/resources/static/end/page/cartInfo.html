@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="content-type" content="no-cache, must-revalidate" />
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
+    <title>收藏栏信息</title>
+
+    <link href="../css/bootstrap.css" rel="stylesheet"/>
+    <link href="../css/font-awesome.css" rel="stylesheet"/>
+    <link href="../css/custom-styles.css" rel="stylesheet"/>
+    <link href="../css/element/index.css" rel="stylesheet"/>
+
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper" v-cloak>
+    <div class="row">
+        <div class="col-md-12" style="height:60px;">
+            <nav class="navbar navbar-default top-navbar" role="navigation">
+                <div class="row">
+                    <div class="col-md-2">
+                        <a class="navbar-brand" style="width:100%; background-color: darkslateblue"
+                           href="index.html"><strong style="font-size: 20px;">电影订票购票系统</strong></a>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="navbar-header">
+                            <a href="/front/index.html"
+                               style="color: white; line-height: 60px; font-size: 16px; margin-left: 30px"><i
+                                    class="fa fa-desktop"></i></a>
+                        </div>
+                        <ul class="nav navbar-top-links navbar-right">
+                            <li style="color: white">欢迎您，{{ user.name }}</li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                    <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-user">
+                                    <li><a href="accountUserInfo.html"><i
+                                            class="fa fa-user fa-fw"></i> 个人信息</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li><a href="javascript:void(0)" @click="logout"><i
+                                            class="fa fa-sign-out fa-fw"></i> 退出</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <nav id="nav-id" class="navbar-default navbar-side" role="navigation">
+                <div class="sidebar-collapse">
+                    <ul class="nav" id="main-menu">
+                        <li>
+                            <a href="index.html"><i class="fa fa-dashboard"></i> 首页</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-sitemap"></i> 信息管理<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level collapse in">
+								<li v-if="authority.indexOf(1) != -1">
+									<a href="adminInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">管理员信息</span></a>
+								</li>
+								<li v-if="authority.indexOf(3) != -1">
+									<a href="userInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">用户信息</span></a>
+								</li>
+								<li v-if="authority.indexOf(4) != -1">
+									<a href="messageInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">交流信息</span></a>
+								</li>
+								<li v-if="authority.indexOf(1000001) != -1">
+									<a href="advertiserInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">公告信息</span></a>
+								</li>
+
+								<li v-if="authority.indexOf(1000015) != -1">
+									<a href="goodsInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">电影详情</span></a>
+								</li>
+								<li v-if="authority.indexOf(1000016) != -1">
+									<a href="cartInfo.html" class="active-menu"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">收藏栏信息</span></a>
+								</li>
+								<li v-if="authority.indexOf(1000017) != -1">
+									<a href="orderInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">订单信息</span></a>
+								</li>
+								<li v-if="authority.indexOf(1000018) != -1">
+									<a href="commentInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">评价信息</span></a>
+								</li>
+								<li v-if="authority.indexOf(10000014) != -1">
+									<a href="typeInfo.html"><i class="fa fa-table sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">电影类型</span></a>
+								</li>
+
+                                <li>
+                                    <a href="javascript:void(0)" @click="personalPage"><i class="fa fa-user"></i>个人信息</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="updatePassword.html"><i class="fa fa-unlock-alt"></i>修改密码</a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" @click="logout"><i class="fa fa-power-off"></i>退出登录</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="col-md-10" style="background-color: #e6e6e6">
+            <div id="page-wrapper">
+                <div id="page-inner">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    购物车信息表
+                                </div>
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <div class="nx-table-header">
+                                        </div>
+                                        <table class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                            <tr>
+
+                                                <th>商品名称</th>
+                                                <th>商品数量</th>
+                                                <th>创建时间</th>
+                                                <th>创建人</th>
+                                                <th>操作</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody v-for="obj in objs">
+                                            <tr>
+
+                                                <td>{{obj.goodsName}}</td>
+                                                <td>{{obj.count}}</td>
+                                                <td>{{obj.createTime}}</td>
+                                                <td>{{obj.userName}}</td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-xs" v-on:click="del(obj.id)">删除</button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination">
+                                                <li class="page-item" v-bind:class="{ disabled: preActive }">
+                                                    <a class="page-link" href="javascript:void(0)"
+                                                       v-on:click="loadTable(pageInfo.pageNum - 1)">上一页</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0)" v-if="pageInfo.pageNum > 1" v-on:click="loadTable(pageInfo.pageNum - 1)">{{pageInfo.pageNum - 1}}</a>
+                                                </li>
+                                                <li class="page-item disabled">
+                                                    <a class="page-link" aria-disabled="true" href="javascript:void(0)">{{pageInfo.pageNum}}</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0)" v-if="pageInfo.hasNextPage" v-on:click="loadTable(pageInfo.pageNum + 1)">{{pageInfo.pageNum + 1}}</a>
+                                                </li>
+                                                <li class="page-item" v-bind:class="{ disabled: nextActive }">
+                                                    <a class="page-link" href="javascript:void(0)" v-on:click="loadTable(pageInfo.hasNextPage? (pageInfo.pageNum + 1) : pageInfo.pageNum)">下一页</a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/jquery-1.10.2.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.metisMenu.js"></script>
+<script src="../js/custom-scripts.js"></script>
+<script src="../js/my.js"></script>
+<script src="../js/vue2.6.11/vue.min.js"></script>
+<script src="../js/vue2.6.11/axios.js"></script>
+<script src="../js/element/index.js"></script>
+
+<script>
+    function msg(type, msg) {
+        Vue.prototype.$message({
+            type: type, // success（成功）、warning（警告）, error(错误)
+            message: msg,
+            duration: 2000,
+            offset: 100,
+            center: true
+        })
+    }
+
+    new Vue({
+        el: '#wrapper',
+        data: {
+            authority: [],
+            user: {},
+            objs: [],
+            pageInfo: {},
+            preActive: true,
+            nextActive: true,
+            entity: {}
+        },
+        created: function () {
+            const menuHeight = document.getElementById("main-menu").getElementsByTagName('li').length * 53;
+            const bodyHeight = document.getElementsByTagName("body")[0].clientHeight;
+            document.getElementById("nav-id").style.height = (menuHeight > bodyHeight ? menuHeight : bodyHeight) + 'px';
+
+            this.user = JSON.parse(localStorage.getItem('user'));
+
+            axios.get("/authority").then(res => {
+                if (res.data.code === 0) {
+                    this.authority = res.data.data;
+                } else {
+                    msg('error', res.data.msg);
+                }
+            });
+            this.loadTable(1);
+        },
+        methods: {
+
+            loadTable(pageNum) {
+                axios.get("/cartInfo/page?pageNum=" + pageNum).then(res => {
+                    if (res.data.code === 0) {
+                        this.objs = res.data.data.list;
+                        this.pageInfo = res.data.data;
+                        this.preActive = !(this.pageInfo.hasPreviousPage);
+                        this.nextActive = !(this.pageInfo.hasNextPage);
+                    } else {
+                        msg('error', res.data.msg);
+                    }
+                });
+            },
+            del(id) {
+                let _this = this;
+                this.$confirm('确认删除？', '系统提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    cancelButtonClass: 'btn-custom-cancel',
+                    type: 'warning'
+                }).then(function(){
+                    axios.delete("/cartInfo/" + id).then(res => {
+                        if (res.data.code === 0) {
+                            msg('success', '删除成功');
+                            _this.loadTable(1);
+                        } else {
+                            msg('error', res.data.msg);
+                        }
+                    });
+                }).catch(function() {
+                    console.log("取消成功！");
+                });
+            },
+            logout() {
+                logout();
+            }
+        }
+    })
+</script>
+</body>
+</html>

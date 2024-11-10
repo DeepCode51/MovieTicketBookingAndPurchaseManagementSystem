@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<!--<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>激活页面</title>
+</head>
+<body>
+<div>
+    Email 地址验证<br>
+    这封信是由<a target="_blank">北辰电影院</a>发送的。<br>
+    您收到这封邮件，是由于在<a target="_blank">北辰博客</a>进行了新用户注册，或用户修改 Email 使用了这个邮箱地址。<br>
+    如果您并没有访问过<a target="_blank">北辰博客</a>或没有进行上述操作，请忽略这封邮件。您不需要退订或进行其他进一步的操作。<br>
+    ----------------------------------------------------------------------<br>
+    帐号激活说明<br>
+    ----------------------------------------------------------------------<br>
+    如果您是<a target="_blank">北辰电影院</a>的新用户，或在修改您的注册 Email 时使用了本地址，我们需要对您的地址有效性进行验证以避免垃圾邮件或地址被滥用。<br>
+    您只需点击下面的链接激活帐号即可：<br>
+    <a th:href="@{${activationUrl}}"><span th:text="${activationUrl}"></span></a><br/>
+    感谢您的访问，祝您生活愉快！<br>
+    此致<br>
+</div>
+</body>
+</html>

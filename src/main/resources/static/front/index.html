@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="content-type" content="no-cache, must-revalidate"/>
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
+    <title>首页</title>
+    <link href="css/swiper-5.4.5/swiper.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/my.css" rel="stylesheet">
+
+    <style>
+        .nx-nav-container ul {
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nx-nav-container ul li {
+            display: inline-block;
+            width: 120px;
+            text-align: center;
+            line-height: 45px;
+        }
+
+        .nx-nav-container a {
+            color: #FFFFFF;
+        }
+
+        .nx-nav-container a:hover {
+            color: aquamarine;
+            text-decoration: none;
+        }
+
+        .nx-classify-container li {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px dashed #ccc;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .nx-classify-container li.active {
+            color: #007aff;
+            background: #ddd;
+        }
+
+        .nx-goods-container {
+            font-size: 0;
+            line-height: 20px;
+        }
+
+        .nx-goods-container li {
+            width: 20%;
+            display: inline-block;
+            padding: 5px;
+        }
+
+        .nx-goods-container li img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .direct {
+            color: gray;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 20px
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+
+    <div style="text-align: right;">
+        <iframe width="700" scrolling="no" height="60" frameborder="0" allowtransparency="true" src="http://i.tianqi.com/index.php?c=code&amp;id=12&amp;icon=1&amp;num=5"></iframe>
+    </div>
+
+    <div class="nx-header">
+        <div style="display: flex;width: 100%; height: 30px; line-height: 30px; background-color: #eee;">
+            <div style="flex: 5; padding: 0 10px; color: orangered">
+                欢迎访问 电影订票购票系统
+            </div>
+            <div v-if="user.name" style="flex: 1">
+                欢迎您：{{user.name}}
+                <a style="margin-left: 30px; color: blue" href="javascript:void(0)" @click="logout">退出</a>
+                <a v-if="isCollect" style="margin-left: 10px" href="collectInfo.html">收藏夹</a>
+            </div>
+        </div>
+    </div>
+    <div style="height: 80px; line-height: 80px;">
+        <div style="margin-left: 20px; position: relative">
+            <img src="img/logo1.png" alt="" style="width: 40px; position: absolute; top: 20px">
+            <b style="margin-left:45px;font-size: 25px; text-shadow: 5px 5px 3px #888888;">电影订票购票系统</b>
+            <input type="text" style="position: absolute; right: 0;top: 30px; height: 30px; margin-right: 20px;" placeholder="请输入商品关键字查询"
+                   v-model="searchText" @keyup.enter="searchGoods">
+        </div>
+    </div>
+
+    <div class="nx-nav-container" style="height: 45px; background-color: black">
+        <ul>
+            <li class="active"><a href="index.html">首页</a></li>
+            <li><a href="advertiserInfo.html" >公告信息</a></li>
+			<li><a href="messageInfo.html">交流信息</a></li>
+
+			<li><a href="cartInfo.html">收藏栏信息</a></li>
+			<li><a href="orderInfo.html">订单信息</a></li>
+			<li><a href="commentInfo.html">评价信息</a></li>
+
+            <li><a href="javascript:void(0)" @click="personalPage">个人信息</a></li>
+            <li v-if="isShow"><a href="/end/page/index.html" target="_blank">进入后台系统</a></li>
+            <li><a href="/end/page/login.html" target="_blank">登录</a></li>
+            <li><a href="/end/page/register2.html" target="_blank">注册</a></li>
+        </ul>
+    </div>
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide"><img class="carousel-img" src="img/carousel/6.jpg" alt=""></div>
+            <div class="swiper-slide"><img class="carousel-img" src="img/carousel/5.jpg" alt=""></div>
+            <div class="swiper-slide"><img class="carousel-img" src="img/carousel/4.jpg" alt=""></div>
+        </div>
+        <!-- 如果需要分页器 -->
+        <div class="swiper-pagination"></div>
+
+        <!-- 如果需要导航按钮 -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+
+    </div>
+
+    <div style="margin-top: 5px; display: flex">
+        <div style="width: 12%; margin: 0 10px; height: 600px; border: 1px solid #ccc">
+            <div style="height: 40px; background-color: #ccc">
+                <div style="width: 150px; height: 40px; margin-left: 10px; font-size: 20px; line-height: 40px; text-align: center; color: white; background-color: red">
+                    <b>电影分类</b>
+                </div>
+            </div>
+
+            <div class="nx-classify-container">
+                <ul>
+                    <li v-for="(item,index) in typeObjs" :class="{ active: index === activeIndex }"
+                        @click="getIndexAndGoods(index, item.id)">
+                        {{item.name}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="width: 65%; border: 1px solid #ddd">
+            <div style="height: 40px; background-color: #eee;">
+                <div style="width: 150px; height: 40px; margin-left: 10px; font-size: 20px; line-height: 40px; text-align: center; color: white; background-color: red">
+                    <b>电影展示</b>
+                </div>
+            </div>
+
+            <div style="padding: 10px; font-size: 14px">
+                <ul class="nx-goods-container">
+                    <li v-for="item in goodsList">
+                        <a :href="'/front/goodsInfo.html?goodsId=' + item.id" target="_blank">
+                            <div><img :src=item.src style="height: 220px"></div>
+                            <div style="font-size: 14px; text-align: center">{{item.name}}</div>
+                            <div style="font-size: 14px; text-align: center; color: red">￥ {{item.price}}</div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="width: 20%; height: 600px;">
+
+            <div style="height: 300px; width: 100%;border: 1px solid #ccc; margin: 0 10px; position: relative">
+                <div style="height: 40px; background-color: #ccc;">
+                    <div style="width: 150px; height: 40px; margin-left: 10px; font-size: 20px; line-height: 40px; text-align: center; color: white; background-color: red">
+                        <b>推荐电影</b>
+                    </div>
+                </div>
+                <ul style="padding: 10px; line-height: 30px; font-size: 14px">
+                    <li v-for="item in recommends" style="margin: 5px auto">
+                        <a :href="'/front/goodsInfo.html?goodsId=' + item.id" target="_blank">{{item.name}}——{{item.actor}}</a>
+                    </li>
+                </ul>
+                <div style="text-align: center; position: absolute; bottom: 0; width: 100%">
+                    <span class="direct" @click="recommend('left')"><</span>
+                    <span class="direct" @click="recommend('right')">></span>
+                </div>
+            </div>
+
+            <div style="height: 300px; width: 100%;border: 1px solid #ccc; margin: 10px; position: relative">
+                <div style="height: 40px; background-color: #ccc;">
+                    <div style="width: 150px; height: 40px; margin-left: 10px; font-size: 20px; line-height: 40px; text-align: center; color: white; background-color: red">
+                        <b>热映电影</b>
+                    </div>
+                </div>
+                <ul style="padding: 10px; line-height: 30px; font-size: 14px">
+                    <li v-for="item in hots" style="margin: 5px auto">
+                        <a :href="'/front/goodsInfo.html?goodsId=' + item.id" target="_blank">{{item.name}}——{{item.actor}}</a>
+                    </li>
+                </ul>
+                <div style="text-align: center; position: absolute; bottom: 0; width: 100%">
+                    <span class="direct" @click="sales('left')"><</span>
+                    <span class="direct" @click="sales('right')">></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--js库文件-->
+<script src="js/jquery-1.10.2.js"></script>
+<script src="js/swiper-5.4.5/swiper.min.js"></script>
+<script src="js/vue2.6.11/axios.js"></script>
+<script src="js/vue2.6.11/vue.min.js"></script>
+<script src="js/my.js"></script>
+
+<script>
+    $(function () {
+        var mySwiper = new Swiper('.swiper-container', {
+            // direction: 'vertical', // 垂直切换选项
+            autoplay: {
+                delay: 2000,
+                disableOnInteraction: false
+            },//可选选项，自动滑动
+            loop: true, // 循环模式选项
+            speed: 2000,
+
+            // 如果需要分页器
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true
+            },
+
+            // 如果需要前进后退按钮
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev'
+            }
+        });
+
+        // 鼠标移入停止自动滚动
+        var $swiperSide = $('.swiper-slide');
+        $swiperSide.mouseenter(function () {
+            mySwiper.autoplay.stop();
+        });
+        // 鼠标移出开始自动滚动
+        $swiperSide.mouseleave(function () {
+            mySwiper.autoplay.start();
+        });
+    });
+
+    new Vue({
+        el: '#wrapper',
+        data: {
+            isCollect: false,
+            activeIndex: 0,
+            typeObjs: [],
+            goodsList: [],
+            recommends: [],
+            hots: [],
+            user: {},
+            recommendPage: 1,
+            recommendPages: 1,
+            salesPage: 1,
+            salesPages: 1,
+            isShow: false,
+            searchText: null
+        },
+        created: function () {
+            axios.get('/auth').then(res => {
+                if (res.data.code === 0) {
+                    this.user = res.data.data;
+                    if (this.user.level === 1) {
+                        this.isShow = true;
+                    }
+                }
+            });
+            this.loadRecommends(1);
+            this.loadHots(1);
+
+            axios.get("/typeInfo").then(res => {
+                this.typeObjs = res.data.data;
+                // 默认展示第一个分类的数据
+                this.getIndexAndGoods(0, this.typeObjs[0].id)
+            });
+        },
+        methods: {
+            loadRecommends(pageNum) {
+                axios.get("/goodsInfo/recommend?pageNum=" + pageNum).then(res => {
+                    if (res.data.code === 0) {
+                        this.recommendPages = Math.ceil(res.data.data.total / 6);  // 默认10个/页
+                        this.recommends = res.data.data.list;
+                    } else {
+                        msg('error', res.data.msg);
+                    }
+                });
+            },
+            loadHots(pageNum) {
+                axios.get("/goodsInfo/sales?pageNum=" + pageNum).then(res => {
+                    if (res.data.code === 0) {
+                        this.salesPages = Math.ceil(res.data.data.total / 6);  // 默认10个/页
+                        this.hots = res.data.data.list;
+                    } else {
+                        msg('error', res.data.msg);
+                    }
+                });
+            },
+            getIndexAndGoods(index, typeId) {
+                this.activeIndex = index;
+                axios.get('/goodsInfo/findByType/' + typeId).then(res => {
+                    if (res.data.code === 0) {
+                        this.goodsList = res.data.data;
+                        this.goodsList.forEach(item => {
+                            let imgSrc = '/front/img/goods/default.png';
+                            if (item.fileIds) {
+                                let fileId = JSON.parse(item.fileIds)[0];
+                                imgSrc = '/files/download/' + fileId;
+                            }
+                            item.src = imgSrc;
+                        })
+                    } else {
+                        msg('error', res.data.msg);
+                    }
+                })
+            },
+            recommend(direct) {
+                if (direct === 'left') {
+                    this.recommendPage = this.recommendPage === 1 ? 1 : (this.recommendPage - 1);
+                } else {
+                    this.recommendPage = (this.recommendPage === this.recommendPages) ? this.recommendPages : (this.recommendPage + 1);
+                }
+                this.loadRecommends(this.recommendPage);
+            },
+            sales(direct) {
+                if (direct === 'left') {
+                    this.salesPage = this.salesPage === 1 ? 1 : (this.salesPage - 1);
+                } else {
+                    this.salesPage = (this.salesPage === this.salesPages) ? this.salesPages : (this.salesPage + 1);
+                }
+                this.loadHots(this.salesPage);
+            },
+            searchGoods(text) {   // 根据关键字查询商品
+                if(text) {
+                    // 调用接口查询
+                    axios.get('/goodsInfo/searchGoods', {
+                        params: {text: this.searchText}
+                    }).then(res => {
+                        if (res.data.code === 0) {
+                            this.goodsList = res.data.data;
+                            this.goodsList.forEach(item => {
+                                let imgSrc = '/front/img/goods/default.png';
+                                if (item.fileIds) {
+                                    let fileId = JSON.parse(item.fileIds)[0];
+                                    imgSrc = '/files/download/' + fileId;
+                                }
+                                item.src = imgSrc;
+                            })
+                            // 去除分类高亮
+                            this.activeIndex = null
+                        } else {
+                            msg('error', res.data.msg);
+                        }
+                    })
+                }
+            },
+            logout() {
+                axios.get("/logout").then(res => {
+                    if(res.data.code === 0) {
+                        location.href = '/front/index.html';
+                    } else {
+                        msg('error', res.data.msg);
+                    }
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>
